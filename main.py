@@ -33,8 +33,16 @@ def handle_message(message):
         bot.reply_to(message, f"Ошибка Groq: {str(e)[:100]}")
 
 # 3. Запуск
+# ... (весь твой предыдущий код остается выше)
+
+# 3. Запуск всего вместе
 if __name__ == "__main__":
+    # Сначала запускаем сайт для Render в отдельном потоке
     threading.Thread(target=run_flask).start()
     print("Бот на Groq запущен...")
-    bot.remove_webhook()
-    bot.polling(none_stop=True)
+    
+    # ОЧИСТКА: Удаляем старые зависшие запросы (решает ошибку 409)
+    bot.remove_webhook(drop_pending_updates=True) 
+    
+    # ЗАПУСК: Бесконечный опрос серверов Telegram
+    bot.infinity_polling(timeout=10, long_polling_timeout=5)
