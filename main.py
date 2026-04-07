@@ -1,44 +1,40 @@
 import os
 import telebot
-import google.generativeai as genai
+from groq import Groq
 from flask import Flask
 import threading
 
-# 1. Создаем мини-сайт для обмана Render
+# 1. Мини-сайт для Render
 app = Flask('')
-
 @app.route('/')
 def home():
-    return "I am alive!"
+    return "Groq Bot is Live!"
 
 def run_flask():
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 8080))
 
-# 2. Настройка ИИ и Бота
-BOT_TOKEN = os.environ.get('BOT_TOKEN')
-AI_KEY = os.environ.get('AI_KEY')
-
-genai.configure(api_key=AI_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
-bot = telebot.TeleBot(BOT_TOKEN)
+# 2. Настройка Groq и Бота
+client = Groq(api_key=os.environ.get('GROQ_API_KEY'))
+bot = telebot.TeleBot(os.environ.get('BOT_TOKEN'))
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "Я готов! Спрашивай что угодно.")
+    bot.reply_to(message, "Привет! Теперь я работаю на Groq. Спрашивай!")
 
 @bot.message_handler(func=lambda message: True)
 def handle_message(message):
     try:
-        response = model.generate_content(message.text)
-        bot.reply_to(message, response.text)
+        chat_completion = client.chat.completions.create(
+            messages=[{"role": "user", "content": message.text}],
+            model="llama-3.3-70b-versatile",
+        )
+        bot.reply_to(message, chat_completion.choices[0].message.content)
     except Exception as e:
-        bot.reply_to(message, f"Ошибка: {str(e)[:100]}")
+        bot.reply_to(message, f"Ошибка Groq: {str(e)[:100]}")
 
-# 3. Запуск всего вместе
+# 3. Запуск
 if __name__ == "__main__":
-    # Сначала запускаем сайт в отдельном потоке
     threading.Thread(target=run_flask).start()
-    # Затем запускаем бота
-    print("Бот запущен...")
+    print("Бот на Groq запущен...")
     bot.remove_webhook()
     bot.polling(none_stop=True)
