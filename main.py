@@ -8,7 +8,7 @@ AI_KEY = os.environ.get('AI_KEY')
 
 # Настройка ИИ
 genai.configure(api_key=AI_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-pro')
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
