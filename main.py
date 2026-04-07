@@ -37,12 +37,10 @@ def handle_message(message):
 
 # 3. Запуск всего вместе
 if __name__ == "__main__":
-    # Сначала запускаем сайт для Render в отдельном потоке
     threading.Thread(target=run_flask).start()
     print("Бот на Groq запущен...")
-    
-    # ОЧИСТКА: Удаляем старые зависшие запросы (решает ошибку 409)
-    bot.remove_webhook(drop_pending_updates=True) 
-    
-    # ЗАПУСК: Бесконечный опрос серверов Telegram
-    bot.infinity_polling(timeout=10, long_polling_timeout=5)
+
+    # Исправленный вариант очистки для всех версий
+    bot.remove_webhook() 
+
+    bot.infinity_polling(timeout=20, long_polling_timeout=10)
