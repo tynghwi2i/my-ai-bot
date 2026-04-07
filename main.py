@@ -19,7 +19,7 @@ BOT_TOKEN = os.environ.get('BOT_TOKEN')
 AI_KEY = os.environ.get('AI_KEY')
 
 genai.configure(api_key=AI_KEY)
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('models/gemini-pro')
 bot = telebot.TeleBot(BOT_TOKEN)
 
 @bot.message_handler(commands=['start'])
