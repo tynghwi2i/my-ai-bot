@@ -1,4 +1,4 @@
-⁵import os
+import os
 import telebot
 import google.generativeai as genai
 from flask import Flask
