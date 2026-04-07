@@ -18,15 +18,15 @@ bot = telebot.TeleBot(BOT_TOKEN)
 def send_welcome(message):
     bot.reply_to(message, "Привет! Я твой умный ИИ помощник. Спрашивай что угодно!")
 
-# Ответ на любые текстовые сообщения
-@bot.message_handler(func=lambda message: True)
+        # Отправляем запрос в нейросеть
+        @bot.message_handler(func=lambda message: True)
 def handle_message(message):
     try:
-        # Отправляем запрос в нейросеть
         response = model.generate_content(message.text)
         bot.reply_to(message, response.text)
     except Exception as e:
-        bot.reply_to(message, "Произошла ошибка, попробуй позже.")
+        print(f"Ошибка ИИ: {e}") # Это появится в логах Render
+        bot.reply_to(message, f"Ошибка: {str(e)[:50]}...") 
 
 # Запуск бота
     # Удаляем старые привязки и запускаем
