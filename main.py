@@ -29,8 +29,11 @@ def handle_message(message):
         bot.reply_to(message, "Произошла ошибка, попробуй позже.")
 
 # Запуск бота
+    # Удаляем старые привязки и запускаем
 if __name__ == "__main__":
     bot.remove_webhook()
-bot.polling(none_stop=True)
+    print("Бот запущен...")
+    bot.polling(none_stop=True)
+
 
 
