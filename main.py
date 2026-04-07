@@ -1,4 +1,4 @@
-import os
+⁵import os
 import telebot
 import google.generativeai as genai
 from flask import Flask
@@ -19,7 +19,7 @@ BOT_TOKEN = os.environ.get('BOT_TOKEN')
 AI_KEY = os.environ.get('AI_KEY')
 
 genai.configure(api_key=AI_KEY)
-model = genai.GenerativeModel('models/gemini-pro')
+model = genai.GenerativeModel('gemini-1.5-flash-latest')
 bot = telebot.TeleBot(BOT_TOKEN)
 
 @bot.message_handler(commands=['start'])
