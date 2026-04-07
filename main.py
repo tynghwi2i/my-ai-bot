@@ -30,5 +30,7 @@ def handle_message(message):
 
 # Запуск бота
 if __name__ == "__main__":
-    bot.polling(none_stop=True)
+    bot.remove_webhook()
+bot.polling(none_stop=True)
+
 
