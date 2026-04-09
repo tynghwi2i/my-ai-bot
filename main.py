@@ -57,21 +57,33 @@ def search_internet(query):
         return "Поиск временно недоступен."
 
 # 5. Обработка сообщений
+# 5. Обработка сообщений
 @bot.message_handler(func=lambda message: True)
 def handle_message(message):
     user_id = message.from_user.id
-    text = message.text
+    text = message.text.lower()
 
-    # Если спрашиваешь про новости или курс - бот поищет в сети
-    search_keywords = ['найди', 'новости', 'сегодня', 'курс', 'погода']
-    context_info = ""
-    if any(word in text.lower() for word in search_keywords):
-        context_info = f"\nАктуально на сегодня: {search_internet(text)}"
+    # Ключевые слова для активации поиска
+    search_keywords = ['найди', 'новости', 'сегодня', 'курс', 'погода', 'интернет', 'инете']
+    internet_data = ""
+    
+    if any(word in text for word in search_keywords):
+        print(f"Запуск поиска для: {text}")
+        internet_data = search_internet(message.text)
 
-    save_message(user_id, "user", text)
+    # Сохраняем и берем историю из SQL
+    save_message(user_id, "user", message.text)
     history = get_history(user_id)
     
-    messages = [{"role": "system", "content": f"Ты ассистент Артура. Сегодня 9 апреля 2026 года. {context_info}"}] + history
+    # НОВАЯ ИНСТРУКЦИЯ: убрали "ассистента Артура" и добавили жесткий приоритет поиска
+    system_prompt = (
+        f"Ты — мощный ИИ. Сегодня 9 апреля 2026 года. "
+        f"Если ниже есть данные из интернета, используй их как истину. "
+        f"Никогда не говори, что у тебя нет доступа к сети, если данные предоставлены.\n"
+        f"ДАННЫЕ ИЗ ИНТЕРНЕТА: {internet_data}"
+    )
+
+    messages = [{"role": "system", "content": system_prompt}] + history
 
     try:
         completion = client.chat.completions.create(
@@ -82,7 +94,9 @@ def handle_message(message):
         bot.reply_to(message, response)
         save_message(user_id, "assistant", response)
     except Exception as e:
-        bot.reply_to(message, "Ошибка в работе мозга бота.")
+        print(f"Ошибка Groq: {e}")
+        bot.reply_to(message, "Ошибка связи.")
+
 
 # 6. Запуск
 # 6. Запуск
