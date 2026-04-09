@@ -58,29 +58,35 @@ def search_internet(query):
 
 # 5. Обработка сообщений
 # 5. Обработка сообщений
+# 5. Обработка сообщений
 @bot.message_handler(func=lambda message: True)
 def handle_message(message):
     user_id = message.from_user.id
     text = message.text.lower()
 
-    # Ключевые слова для активации поиска
-    search_keywords = ['найди', 'новости', 'сегодня', 'курс', 'погода', 'интернет', 'инете']
+    # Список слов, которые включают поиск
+    search_keywords = ['найди', 'новости', 'сегодня', 'курс', 'погода', 'интернет', 'инете', 'что творится']
     internet_data = ""
     
+    # Если в вопросе есть ключевое слово — идем в DuckDuckGo
     if any(word in text for word in search_keywords):
-        print(f"Запуск поиска для: {text}")
+        print(f"Ищу в интернете для: {message.text}")
         internet_data = search_internet(message.text)
 
-    # Сохраняем и берем историю из SQL
+    # Сохраняем сообщение в базу
     save_message(user_id, "user", message.text)
     history = get_history(user_id)
     
-    # НОВАЯ ИНСТРУКЦИЯ: убрали "ассистента Артура" и добавили жесткий приоритет поиска
+    # ЖЕСТКАЯ ИНСТРУКЦИЯ ДЛЯ ИИ
     system_prompt = (
-        f"Ты — мощный ИИ. Сегодня 9 апреля 2026 года. "
-        f"Если ниже есть данные из интернета, используй их как истину. "
-        f"Никогда не говори, что у тебя нет доступа к сети, если данные предоставлены.\n"
-        f"ДАННЫЕ ИЗ ИНТЕРНЕТА: {internet_data}"
+        f"Ты — современный и дерзкий ИИ. Тебя зовут Тест-Бот. "
+        f"Сегодня 9 апреля 2026 года. Твоя локация — Кыргызстан.\n"
+        f"ПРАВИЛА:\n"
+        f"1. Никогда не называй себя 'ассистентом Артура'. Ты самостоятельный интеллект.\n"
+        f"2. Если ниже есть блок 'РЕАЛЬНЫЕ ДАННЫЕ', используй только их для ответа. "
+        f"Никогда не говори 'я не имею доступа к интернету', если данные предоставлены.\n"
+        f"3. Отвечай кратко и по делу.\n\n"
+        f"РЕАЛЬНЫЕ ДАННЫЕ ИЗ СЕТИ: {internet_data}"
     )
 
     messages = [{"role": "system", "content": system_prompt}] + history
@@ -95,7 +101,8 @@ def handle_message(message):
         save_message(user_id, "assistant", response)
     except Exception as e:
         print(f"Ошибка Groq: {e}")
-        bot.reply_to(message, "Ошибка связи.")
+        bot.reply_to(message, "Ошибка в работе нейросети.")
+
 
 
 # 6. Запуск
