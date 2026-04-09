@@ -85,8 +85,14 @@ def handle_message(message):
         bot.reply_to(message, "Ошибка в работе мозга бота.")
 
 # 6. Запуск
+# 6. Запуск
 if __name__ == "__main__":
     init_db()
+    # Запускаем Flask в отдельном потоке
     threading.Thread(target=run_flask).start()
-    bot.remove_webhook(drop_pending_updates=True)
+    
+    # Исправленная часть запуска бота:
+    bot.remove_webhook() # Убрали лишний аргумент, который вызывал ошибку
+    print("Бот запущен и готов к работе!")
     bot.infinity_polling(timeout=20)
+
