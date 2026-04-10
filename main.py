@@ -9,8 +9,8 @@ import google.generativeai as genai
 # ============================================================
 # 🔑 ВСТАВЬ СВОИ КЛЮЧИ ЗДЕСЬ
 # ============================================================
-TELEGRAM_TOKEN = "ВАШ_TELEGRAM_ТОКЕН"
-GEMINI_API_KEY = "ВАШ_GEMINI_API_КЛЮЧ"
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 # ============================================================
 
 genai.configure(api_key=GEMINI_API_KEY)
