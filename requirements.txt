@@ -1,5 +1,2 @@
-pyTelegramBotAPI==4.26.0
-groq
-flask
-psycopg2-binary
-duckduckgo-search
+aiogram==3.4.1
+google-generativeai==0.4.0
